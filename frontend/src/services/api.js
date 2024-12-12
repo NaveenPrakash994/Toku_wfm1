@@ -1,5 +1,6 @@
 const BASE_URL = "http://localhost:8000";
 
+// Function to get forecast data
 export const getForecast = async (data) => {
   try {
     const payload = {
@@ -16,7 +17,7 @@ export const getForecast = async (data) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
     }
 
     const result = await response.json();
@@ -27,6 +28,7 @@ export const getForecast = async (data) => {
   }
 };
 
+// Function to get schedule data
 export const getSchedule = async (data) => {
   try {
     const response = await fetch(`${BASE_URL}/schedule`, {
@@ -39,7 +41,7 @@ export const getSchedule = async (data) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
     }
 
     const result = await response.json();
