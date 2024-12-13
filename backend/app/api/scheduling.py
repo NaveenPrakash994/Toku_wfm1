@@ -13,4 +13,4 @@ async def schedule(data: SchedulingRequest):
         return {"schedule": schedule}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) 

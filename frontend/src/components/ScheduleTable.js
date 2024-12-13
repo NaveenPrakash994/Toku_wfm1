@@ -7,27 +7,27 @@ const ScheduleTable = ({ forecastData }) => {
     const [numAgents, setNumAgents] = useState(10);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    
     useEffect(() => {
         if (forecastData && forecastData.length > 0) {
             handleGetSchedule();
         }
     }, [forecastData]);
-
+    
     const handleGetSchedule = async () => {
         if (numAgents < 1) {
             setError("Number of agents must be at least 1");
             return;
         }
-
+        
         setIsLoading(true);
         setError(null);
-
-        const data = { 
-            forecasted_calls: forecastData, 
-            num_agents: numAgents 
+        
+        const data = {
+            forecasted_calls: forecastData,
+            num_agents: numAgents
         };
-
+        
         try {
             const schedule = await getSchedule(data);
             setScheduleData(schedule);
@@ -38,13 +38,13 @@ const ScheduleTable = ({ forecastData }) => {
             setIsLoading(false);
         }
     };
-
+    
     return (
         <div className="schedule-table">
             <h2>Staff Scheduling</h2>
             
             <div className="input-section">
-                <label>Number of Agents</label>
+                <label>Total Available Agents</label>
                 <input
                     type="number"
                     min="1"
@@ -76,17 +76,17 @@ const ScheduleTable = ({ forecastData }) => {
                     </div>
                 ) : scheduleData.length > 0 ? (
                     <div className="schedule-grid">
-                        {scheduleData.map((week, index) => (
+                        {scheduleData.map((block, index) => (
                             <div key={index} className="schedule-item">
-                                <div className="schedule-item-header">Week {week.week}</div>
+                                <div className="schedule-item-header">Week {block.week} Shift {block.shift}</div>
                                 <div className="schedule-item-content">
                                     <p>
                                         <span>Agents Needed:</span> 
-                                        {week.agents_needed}
+                                        {block.agents_needed}
                                     </p>
                                     <p>
                                         <span>Forecasted Calls:</span> 
-                                        {week.forecasted_calls}
+                                        {block.forecasted_calls}
                                     </p>
                                 </div>
                             </div>

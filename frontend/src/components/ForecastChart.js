@@ -3,25 +3,38 @@ import { getForecast } from '../services/api';
 import '../styles/ForecastChart.css';
 
 const ForecastChart = ({ setForecastData }) => {
-    const [startWeek, setStartWeek] = useState(1);
-    const [endWeek, setEndWeek] = useState(5);
+    const [startWeek, setStartWeek] = useState('');
+    const [endWeek, setEndWeek] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [localForecastData, setLocalForecastData] = useState([]);
-
+    
     const handleGetForecast = async () => {
-        if (endWeek < startWeek) {
-            setError("End week must be greater than start week");
+        // Validate input
+        if (!startWeek || !endWeek) {
+            setError("Please select both start and end weeks");
             return;
         }
-
+        
+        const start = parseInt(startWeek);
+        const end = parseInt(endWeek);
+        
+        if (isNaN(start) || isNaN(end)) {
+            setError("Please enter valid week numbers");
+            return;
+        }
+        
+        if (end < start) {
+            setError("End week must be greater than or equal to start week");
+            return;
+        }
+        
         setIsLoading(true);
         setError(null);
-
-        const data = { start_week: Number(startWeek), end_week: Number(endWeek) };
-
+        
         try {
-            const predictions = await getForecast(data);
+            const payload = { start_week: start, end_week: end };
+            const predictions = await getForecast(payload);
             
             if (Array.isArray(predictions)) {
                 const roundedPredictions = predictions.map(pred => Math.round(pred));
@@ -38,7 +51,7 @@ const ForecastChart = ({ setForecastData }) => {
             setIsLoading(false);
         }
     };
-
+    
     return (
         <div className="forecast-chart">
             <h2>Workforce Forecast</h2>
@@ -50,8 +63,9 @@ const ForecastChart = ({ setForecastData }) => {
                         type="number"
                         min="1"
                         value={startWeek}
-                        onChange={(e) => setStartWeek(Math.max(1, Number(e.target.value)))}
+                        onChange={(e) => setStartWeek(e.target.value)}
                         disabled={isLoading}
+                        placeholder="Enter start week"
                     />
                 </div>
                 <div>
@@ -60,22 +74,23 @@ const ForecastChart = ({ setForecastData }) => {
                         type="number"
                         min="1"
                         value={endWeek}
-                        onChange={(e) => setEndWeek(Math.max(1, Number(e.target.value)))}
+                        onChange={(e) => setEndWeek(e.target.value)}
                         disabled={isLoading}
+                        placeholder="Enter end week"
                     />
                 </div>
             </div>
-
+            
             <button 
-                onClick={handleGetForecast} 
-                disabled={isLoading}
+                onClick={handleGetForecast}
+                disabled={isLoading || !startWeek || !endWeek}
                 className="submit-button"
             >
                 {isLoading ? "Loading..." : "Get Forecast"}
             </button>
-
+            
             {error && <div className="error-message">{error}</div>}
-
+            
             <div className="predictions">
                 <h3>Predictions:</h3>
                 {isLoading ? (
@@ -86,7 +101,7 @@ const ForecastChart = ({ setForecastData }) => {
                     <div className="predictions-grid">
                         {localForecastData.map((prediction, index) => (
                             <div key={index} className="grid-item">
-                                <span>Week {index + 1}</span>
+                                <span>Week {Math.floor(index / 3) + 1} Shift {(index % 3) + 1}</span>
                                 <p>{prediction}</p>
                             </div>
                         ))}
