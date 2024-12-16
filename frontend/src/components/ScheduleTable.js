@@ -5,6 +5,7 @@ import '../styles/ScheduleTable.css';
 const ScheduleTable = ({ forecastData }) => {
     const [scheduleData, setScheduleData] = useState([]);
     const [numAgents, setNumAgents] = useState(10);
+    const [maxCallsPerAgent, setMaxCallsPerAgent] = useState(40);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     
@@ -23,13 +24,18 @@ const ScheduleTable = ({ forecastData }) => {
         setIsLoading(true);
         setError(null);
         
+        // Prepare the data with forecasted calls and number of agents
         const data = {
             forecasted_calls: forecastData,
-            num_agents: numAgents
+            num_agents: numAgents,
+            max_calls_per_agent: maxCallsPerAgent
         };
         
         try {
+            // Call the API to generate schedule
             const schedule = await getSchedule(data);
+            
+            // Directly use the backend's scheduling results
             setScheduleData(schedule);
         } catch (error) {
             setError(error.message || "Failed to generate schedule");
@@ -44,14 +50,26 @@ const ScheduleTable = ({ forecastData }) => {
             <h2>Staff Scheduling</h2>
             
             <div className="input-section">
-                <label>Total Available Agents</label>
-                <input
-                    type="number"
-                    min="1"
-                    value={numAgents}
-                    onChange={(e) => setNumAgents(Math.max(1, Number(e.target.value)))}
-                    disabled={isLoading}
-                />
+                <div>
+                    <label>Total Available Agents</label>
+                    <input
+                        type="number"
+                        min="1"
+                        value={numAgents}
+                        onChange={(e) => setNumAgents(Math.max(1, Number(e.target.value)))}
+                        disabled={isLoading}
+                    />
+                </div>
+                <div>
+                    <label>Max Calls per Agent</label>
+                    <input
+                        type="number"
+                        min="10"
+                        value={maxCallsPerAgent}
+                        onChange={(e) => setMaxCallsPerAgent(Math.max(10, Number(e.target.value)))}
+                        disabled={isLoading}
+                    />
+                </div>
             </div>
 
             <button 
@@ -87,6 +105,14 @@ const ScheduleTable = ({ forecastData }) => {
                                     <p>
                                         <span>Forecasted Calls:</span> 
                                         {block.forecasted_calls}
+                                    </p>
+                                    <p>
+                                        <span>Calls per Agent:</span> 
+                                        {block.calls_per_agent}
+                                    </p>
+                                    <p>
+                                        <span>Load Percentage:</span> 
+                                        {block.load_percentage}%
                                     </p>
                                 </div>
                             </div>

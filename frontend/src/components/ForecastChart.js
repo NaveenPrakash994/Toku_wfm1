@@ -33,7 +33,7 @@ const ForecastChart = ({ setForecastData }) => {
         setError(null);
         
         try {
-            const payload = { start_week: start, end_week: end };
+            const payload = { start_week: start, end_week: end, num_weeks: end - start + 1 }; // Add num_weeks here
             const predictions = await getForecast(payload);
             
             if (Array.isArray(predictions)) {
@@ -92,7 +92,7 @@ const ForecastChart = ({ setForecastData }) => {
             {error && <div className="error-message">{error}</div>}
             
             <div className="predictions">
-                <h3>Predictions:</h3>
+            
                 {isLoading ? (
                     <div className="loading">
                         <div className="loading-spinner"></div>

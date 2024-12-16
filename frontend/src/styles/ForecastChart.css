@@ -14,12 +14,65 @@
   margin-bottom: 20px;
   text-align: center;
 }
+.grid {
+  display: flex;
+  gap: 20px; /* Space between the two fields */
+  margin-bottom: 20px; /* Space below the input fields */
+}
+
+.grid div {
+  flex: 1; /* Make each input container take equal space */
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  gap: 10px; /* Space between label and input */
+}
+
+label {
+  font-size: 16px; /* Larger and more readable labels */
+  font-weight: bold; /* Make labels stand out */
+  color: #2c3e50; /* Match the heading color for consistency */
+}
+
+input {
+  padding: 12px; /* Add more padding inside the input fields */
+  font-size: 14px; /* Make input text readable */
+  border: 1px solid #ccc; /* Subtle border for input fields */
+  border-radius: 6px; /* Rounded corners to match the card style */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+input:disabled {
+  background-color: #e9ecef; /* Grey out disabled inputs */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+}
+
+.submit-button {
+  width: 100%; /* Full width button */
+  padding: 12px; /* Comfortable padding */
+  font-size: 16px; /* Larger button text */
+  color: white;
+  background-color: #3498db; /* Primary color for button */
+  border: none;
+  border-radius: 6px; /* Match other rounded elements */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #2874a6; /* Darker blue on hover */
+}
+
+.submit-button:disabled {
+  background-color: #ccc; /* Disabled state background */
+  cursor: not-allowed;
+}
+
 
 .forecast-grid, .predictions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Increased column width */
-  gap: 15px; /* Increased gap between items */
-  margin-top: 15px;
+  gap: 20px; /* Increased gap between items */
+  margin-top: 20px;
 }
 
 .grid-item {

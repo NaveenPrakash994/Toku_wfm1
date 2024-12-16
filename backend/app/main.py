@@ -8,13 +8,13 @@ app = FastAPI()
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  # Be careful with this in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+# Include routers with prefixes
 app.include_router(forecast_router, prefix="/forecast", tags=["forecast"])
 app.include_router(schedule_router, prefix="/schedule", tags=["schedule"])
 
