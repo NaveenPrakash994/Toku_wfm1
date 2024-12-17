@@ -30,6 +30,7 @@ export const getForecast = async (data) => {
   }
 };
 
+
 export const getSchedule = async (data) => {
   try {
     const payload = {

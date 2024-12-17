@@ -4,20 +4,25 @@ import '../styles/ScheduleTable.css';
 
 const ScheduleTable = ({ forecastData }) => {
     const [scheduleData, setScheduleData] = useState([]);
-    const [numAgents, setNumAgents] = useState(10);
-    const [maxCallsPerAgent, setMaxCallsPerAgent] = useState(40);
+    const [numAgents, setNumAgents] = useState('');
+    const [maxCallsPerAgent, setMaxCallsPerAgent] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     
-    useEffect(() => {
-        if (forecastData && forecastData.length > 0) {
-            handleGetSchedule();
-        }
-    }, [forecastData]);
-    
     const handleGetSchedule = async () => {
-        if (numAgents < 1) {
+        // Validate inputs
+        if (!forecastData || forecastData.length === 0) {
+            setError("No forecast data available. Please generate forecast first.");
+            return;
+        }
+        
+        if (!numAgents || numAgents < 1) {
             setError("Number of agents must be at least 1");
+            return;
+        }
+        
+        if (!maxCallsPerAgent || maxCallsPerAgent < 10) {
+            setError("Max calls per agent must be at least 10");
             return;
         }
         
@@ -27,8 +32,8 @@ const ScheduleTable = ({ forecastData }) => {
         // Prepare the data with forecasted calls and number of agents
         const data = {
             forecasted_calls: forecastData,
-            num_agents: numAgents,
-            max_calls_per_agent: maxCallsPerAgent
+            num_agents: parseInt(numAgents),
+            max_calls_per_agent: parseInt(maxCallsPerAgent)
         };
         
         try {
@@ -55,8 +60,9 @@ const ScheduleTable = ({ forecastData }) => {
                     <input
                         type="number"
                         min="1"
+                        placeholder="Number of agents"
                         value={numAgents}
-                        onChange={(e) => setNumAgents(Math.max(1, Number(e.target.value)))}
+                        onChange={(e) => setNumAgents(e.target.value)}
                         disabled={isLoading}
                     />
                 </div>
@@ -65,8 +71,9 @@ const ScheduleTable = ({ forecastData }) => {
                     <input
                         type="number"
                         min="10"
+                        placeholder="Maximum calls per agent"
                         value={maxCallsPerAgent}
-                        onChange={(e) => setMaxCallsPerAgent(Math.max(10, Number(e.target.value)))}
+                        onChange={(e) => setMaxCallsPerAgent(e.target.value)}
                         disabled={isLoading}
                     />
                 </div>
@@ -74,12 +81,12 @@ const ScheduleTable = ({ forecastData }) => {
 
             <button 
                 onClick={handleGetSchedule} 
-                disabled={isLoading || forecastData.length === 0}
+                disabled={isLoading || !forecastData || forecastData.length === 0}
                 className="submit-button"
             >
                 {isLoading 
                     ? "Generating Schedule..." 
-                    : forecastData.length === 0 
+                    : !forecastData || forecastData.length === 0
                     ? "Generate Forecast First" 
                     : "Generate Schedule"
                 }
@@ -119,7 +126,12 @@ const ScheduleTable = ({ forecastData }) => {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center">No schedule generated</p>
+                    <p className="text-center">
+                        {!forecastData || forecastData.length === 0 
+                            ? "Generate forecast data first" 
+                            : "Click 'Generate Schedule' to create staff schedule"
+                        }
+                    </p>
                 )}
             </div>
         </div>

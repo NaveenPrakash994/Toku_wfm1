@@ -7,9 +7,8 @@ router = APIRouter()
 
 class ScheduleRequest(BaseModel):
     forecasted_calls: List[float]
-    num_agents: int
+    num_agents: int  # Changed from num_agents_per_period
     max_calls_per_agent: int = 40
-    peak_buffer_ratio: float = 0.2
 
 class ScheduleResponse(BaseModel):
     schedule: List[dict]
@@ -19,9 +18,8 @@ async def create_schedule(request: ScheduleRequest):
     try:
         schedule = generate_schedule(
             forecasted_calls=request.forecasted_calls,
-            num_agents_per_period=request.num_agents,
-            max_calls_per_agent=request.max_calls_per_agent,
-            peak_buffer_ratio=request.peak_buffer_ratio
+            num_agents=request.num_agents,  # Matches the function parameter
+            max_calls_per_agent=request.max_calls_per_agent
         )
         
         return {"schedule": schedule}
